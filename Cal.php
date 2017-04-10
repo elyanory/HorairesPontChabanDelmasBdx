@@ -2,7 +2,7 @@
 
 class Cal
 {
-    const CAL_URL = "http://data.bordeaux-metropole.fr/preview.ajax.php?op=preview&layer_gid=489";
+    const CAL_URL = "https://data.bordeaux-metropole.fr/files.php?gid=489&format=6";
     const FILE_URL = "";
     const FINAL_URL = "";
 
@@ -32,10 +32,23 @@ class Cal
     public function getFile()
     {
         if (is_null($this->file)) {
-            $this->file = file_get_contents(Cal::CAL_URL, false, $this->context);
+            $handle = fopen(Cal::CAL_URL, 'r');
+            $content = [];
+            $i = 0;
+            while (($data = fgetcsv($handle) ) !== false) {
+                $i++;
+
+                if ($i == 1) {
+                    continue;
+                }
+
+                $content[] = $data[0];
+            }
+
+            $this->file = $content;
         }
 
-        return json_decode($this->file);
+        return $this->file;
     }
 
     /**
@@ -53,6 +66,7 @@ class Cal
             $ics = $ics."PRODID:-//LFP/iCal 3.0//FR".chr(10);
 
             foreach ($data as $value) {
+                $value = explode(';', $value);
                 $ics = $ics."BEGIN:VEVENT".chr(10);
 
                 $monthAndDay = substr($value[1], 3, 2).substr($value[1], 0, 2);
