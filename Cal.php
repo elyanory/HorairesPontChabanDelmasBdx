@@ -7,15 +7,13 @@ class Cal
     const FINAL_URL = "";
 
     /**
-     * @var string
-     */
-    private $context;
-
-    /**
      * @var json
      */
     private $file;
 
+    /**
+     * Cal constructor.
+     */
     public function __construct()
     {
         $this->context = stream_context_create([
@@ -112,7 +110,7 @@ class Cal
         fclose($myFile);
 
         if ($download) {
-            return $this->download($fileName, $fileUrl);            
+            return $this->download($fileName, $fileUrl);
         }
     }
 
@@ -122,9 +120,9 @@ class Cal
     public function download($fileName, $fileUrl)
     {
         header('Content-Type: application/octet-stream');
-        header("Content-Transfer-Encoding: Binary"); 
-        header(sprintf("Content-disposition: attachment; filename=%s", $fileName)); 
-        
+        header("Content-Transfer-Encoding: Binary");
+        header(sprintf("Content-disposition: attachment; filename=%s", $fileName));
+
         return readfile($fileUrl);
     }
 }
